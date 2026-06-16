@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ESG Document Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── RESET & ROOT ── */
+:root{
+  --g900:#14532D; --g700:#15803D; --g500:#22C55E; --g200:#BBF7D0;
+  --g100:#DCFCE7; --g50:#F0FDF4;
+  --n900:#111827; --n700:#374151; --n500:#6B7280; --n400:#9CA3AF;
+  --n200:#E5E7EB; --n100:#F3F4F6; --n50:#F9FAFB;
+  --blue:#1D4ED8; --purple:#6D28D9; --amber:#D97706; --red:#DC2626;
+  --white:#FFFFFF;
+  --radius:12px; --radius-sm:8px;
+  --shadow:0 1px 4px rgba(0,0,0,.06);
+  --shadow-lg:0 8px 28px rgba(0,0,0,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--n50);
+  color:var(--n900);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:var(--white);
+  border-bottom:1px solid var(--n200);
+  display:flex;align-items:center;
+  justify-content:space-between;
+  padding:.85rem 2rem;
+  box-shadow:var(--shadow);
+}
+.logo{
+  display:flex;align-items:center;gap:.45rem;
+  font-size:.98rem;font-weight:800;color:var(--g900);
+  text-decoration:none;letter-spacing:-.01em;
+}
+.logo-dot{width:8px;height:8px;background:var(--g500);border-radius:50%;flex-shrink:0}
+.nav-pill{
+  background:var(--g50);color:var(--g700);
+  border:1px solid var(--g200);border-radius:20px;
+  padding:.22rem .8rem;font-size:.72rem;font-weight:700;
+}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(148deg,var(--g50) 0%,#ECFDF5 50%,#EFF6FF 100%);
+  border-bottom:1px solid #E7F5EF;
+  padding:4rem 2rem 3rem;text-align:center;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:var(--white);color:var(--g700);
+  border:1px solid var(--g200);border-radius:20px;
+  padding:.28rem .9rem;font-size:.74rem;font-weight:600;
+  margin-bottom:1.4rem;box-shadow:var(--shadow);
+}
+.pulse{
+  width:7px;height:7px;background:var(--g500);border-radius:50%;
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+h1{
+  font-size:clamp(1.75rem,4vw,2.65rem);font-weight:800;
+  line-height:1.13;color:#0A1628;
+  max-width:660px;margin:0 auto .85rem;letter-spacing:-.02em;
+}
+h1 em{font-style:normal;color:var(--g700)}
+.hero-sub{
+  font-size:.97rem;color:var(--n500);
+  max-width:520px;margin:0 auto 2rem;line-height:1.72;
+}
+
+/* ── UPLOAD ZONE ── */
+.upload-zone{
+  max-width:500px;margin:0 auto;
+  border:2px dashed var(--g500);border-radius:16px;
+  background:var(--white);padding:2.4rem 1.5rem;
+  cursor:pointer;transition:all .22s;
+  position:relative;text-align:center;
+}
+.upload-zone:hover,.upload-zone.drag{
+  border-color:var(--g700);background:var(--g50);
+  transform:translateY(-2px);box-shadow:0 10px 32px rgba(20,83,45,.13);
+}
+.upload-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:2.4rem;margin-bottom:.7rem;display:block;line-height:1}
+.upload-title{font-size:1rem;font-weight:700;color:var(--g900);margin-bottom:.3rem}
+.upload-sub{font-size:.83rem;color:var(--n500);line-height:1.55}
+.upload-hint{font-size:.73rem;color:var(--n400);margin-top:.9rem}
+
+/* ── STATS ── */
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  background:var(--white);
+  border-top:1px solid var(--n200);
+  border-bottom:1px solid var(--n200);
+}
+.stat{padding:1.3rem 1rem;text-align:center;border-right:1px solid var(--n200)}
+.stat:last-child{border-right:none}
+.stat-n{font-size:1.9rem;font-weight:800;color:var(--g900)}
+.stat-l{font-size:.73rem;color:var(--n500);font-weight:500;margin-top:.12rem}
+
+/* ── LOADING ── */
+.loading-overlay{
+  position:fixed;inset:0;background:rgba(255,255,255,.92);
+  display:none;align-items:center;justify-content:center;
+  flex-direction:column;gap:1rem;z-index:200;
+  backdrop-filter:blur(4px);
+}
+.loading-overlay.show{display:flex}
+.spinner{
+  width:46px;height:46px;
+  border:4px solid var(--g100);
+  border-top-color:var(--g700);
+  border-radius:50%;animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:.92rem;color:var(--n500);font-weight:500}
+
+/* ── ERROR ── */
+.error-banner{
+  background:#FEF2F2;border:1.5px solid #FCA5A5;
+  border-radius:var(--radius);padding:1rem 1.2rem;
+  color:#7F1D1D;font-size:.88rem;font-weight:500;
+  margin:1rem 2rem;display:none;
+}
+.error-banner.show{display:block}
+
+/* ── RESULTS ── */
+#results{display:none;padding:2rem;max-width:1300px;margin:0 auto}
+#results.show{display:block}
+
+/* Results header */
+.results-hdr{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;margin-bottom:1.4rem;
+}
+.results-title{font-size:1.35rem;font-weight:800;color:var(--n900)}
+.results-sub{font-size:.83rem;color:var(--n500);margin-top:.18rem}
+.results-actions{display:flex;gap:.65rem;flex-wrap:wrap;align-items:center}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:.45rem;
+  padding:.6rem 1.3rem;border-radius:var(--radius-sm);
+  font-size:.86rem;font-weight:700;border:none;cursor:pointer;
+  transition:all .2s;font-family:'Inter',sans-serif;
+}
+.btn-green{background:var(--g900);color:var(--white)}
+.btn-green:hover{background:var(--g700);transform:translateY(-1px);box-shadow:0 4px 14px rgba(20,83,45,.2)}
+.btn-outline{background:var(--white);color:var(--g900);border:1.5px solid var(--g200)}
+.btn-outline:hover{border-color:var(--g700);background:var(--g50)}
+
+/* Meta strip */
+.meta-strip{
+  display:flex;flex-wrap:wrap;gap:.8rem 1.4rem;
+  background:var(--white);border:1px solid var(--n200);
+  border-radius:var(--radius-sm);padding:.75rem 1.2rem;
+  margin-bottom:1.4rem;align-items:center;
+  box-shadow:var(--shadow);
+}
+.meta-item{font-size:.82rem;color:var(--n500);line-height:1.4}
+.meta-item b{color:var(--n900);font-weight:600}
+
+/* Class badge */
+.cls-badge{
+  display:inline-flex;align-items:center;gap:.35rem;
+  padding:.28rem .85rem;border-radius:20px;
+  font-weight:700;font-size:.8rem;border:1.5px solid;
+}
+.cls-brsr{background:var(--g50);color:var(--g900);border-color:var(--g500)}
+.cls-sust{background:#EFF6FF;color:#1E3A8A;border-color:#93C5FD}
+.cls-inv{background:#FEF2F2;color:#7F1D1D;border-color:#FCA5A5}
+
+/* Section label */
+.sec-label{
+  display:block;font-size:.69rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.3px;
+  color:var(--g700);margin-bottom:.6rem;
+}
+
+/* ── KPI GRID ── */
+.kpi-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:.9rem;margin-bottom:1.4rem;
+}
+.kpi{
+  background:var(--white);border:1.5px solid var(--n200);
+  border-radius:var(--radius);padding:1.15rem 1rem;
+  text-align:center;transition:transform .2s,box-shadow .2s;
+  box-shadow:var(--shadow);
+}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.kpi-label{
+  font-size:.65rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--n500);margin-bottom:.35rem;
+}
+.kpi-value{font-size:2.2rem;font-weight:800;line-height:1.05}
+.kpi-denom{font-size:.72rem;color:var(--n400);margin-top:.06rem}
+.kpi-pill{
+  display:inline-block;margin-top:.38rem;
+  padding:.17rem .62rem;border-radius:20px;font-size:.69rem;font-weight:700;
+}
+
+/* ── CHART LAYOUT ── */
+.charts-row{
+  display:grid;gap:1rem;margin-bottom:1rem;
+}
+.charts-row-2{grid-template-columns:1fr 1fr}
+.charts-row-3{grid-template-columns:1fr 1fr 1fr}
+.charts-row-1{grid-template-columns:1fr}
+
+.chart-card{
+  background:var(--white);border:1.5px solid var(--n200);
+  border-radius:var(--radius);padding:1.2rem;
+  box-shadow:var(--shadow);
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+  display:flex;flex-direction:column;
+}
+.chart-card:hover{
+  transform:scale(1.022);
+  box-shadow:0 12px 36px rgba(0,0,0,.10);
+  border-color:var(--g200);
+}
+.chart-hdr{
+  display:flex;align-items:center;gap:.45rem;
+  margin-bottom:.9rem;flex-shrink:0;
+}
+.chart-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.chart-title{font-size:.8rem;font-weight:700;color:var(--n700)}
+
+/* Chart canvas containers — fixed height so charts don't overflow */
+.chart-wrap{position:relative;width:100%}
+.chart-wrap-sm{height:200px}
+.chart-wrap-md{height:260px}
+.chart-wrap-lg{height:320px}
+.chart-wrap canvas{position:absolute;top:0;left:0;width:100%!important;height:100%!important}
+
+/* ── PII SECTION ── */
+.pii-card{
+  background:var(--white);border:1.5px solid var(--n200);
+  border-radius:var(--radius);padding:1.2rem;
+  margin-bottom:1rem;box-shadow:var(--shadow);
+}
+.pii-count{font-size:.86rem;color:var(--n700);font-weight:500;margin-bottom:.65rem}
+.chips{display:flex;flex-wrap:wrap;gap:.38rem}
+.chip{
+  display:inline-flex;align-items:center;gap:.3rem;
+  padding:.22rem .75rem;border-radius:20px;
+  font-size:.73rem;font-weight:600;border:1px solid;
+  transition:transform .15s;cursor:default;
+}
+.chip:hover{transform:scale(1.04)}
+
+/* Scrubbed text */
+.scrub-hdr{display:flex;align-items:center;justify-content:space-between;margin:.9rem 0 .45rem}
+.scrub-lbl{font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;color:var(--n500)}
+.scrub-box{
+  background:var(--n50);border:1px solid var(--n200);border-radius:var(--radius-sm);
+  padding:.9rem 1rem;font-family:'DM Mono',monospace;font-size:.76rem;
+  line-height:1.75;color:var(--n700);max-height:200px;overflow-y:auto;
+  white-space:pre-wrap;word-break:break-word;
+}
+.scrub-box::-webkit-scrollbar{width:5px}
+.scrub-box::-webkit-scrollbar-track{background:var(--n100)}
+.scrub-box::-webkit-scrollbar-thumb{background:var(--n200);border-radius:3px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .charts-row-3{grid-template-columns:1fr 1fr}
+  #results{padding:1.3rem}
+}
+@media(max-width:640px){
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .charts-row-2,.charts-row-3{grid-template-columns:1fr}
+  nav{padding:.75rem 1rem}
+  .hero{padding:2.8rem 1rem 2.2rem}
+  .stats{grid-template-columns:1fr}
+  .stat{border-right:none;border-bottom:1px solid var(--n200)}
+  .results-hdr{flex-direction:column}
+  #results{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">
+    <span class="logo-dot"></span>
+    ESG Document Intelligence
+  </a>
+  <span class="nav-pill">BRSR · NLP · Scoring</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="pulse"></span>
+    AI-powered ESG classification
+  </div>
+  <h1>Classify. Anonymize. <em>Score.</em><br>Any ESG Report.</h1>
+  <p class="hero-sub">
+    Upload a BRSR or Sustainability Report. Our pipeline strips PII,
+    classifies the document, and delivers a full 16-metric ESG scorecard
+    with a downloadable PDF report.
+  </p>
+
+  <div class="upload-zone" id="uploadZone">
+    <input
+      type="file" id="fileInput" class="upload-input"
+      accept=".pdf,.txt"
+      onchange="handleFile(this)"
+      aria-label="Upload ESG report file"
+    />
+    <span class="upload-icon" aria-hidden="true">📄</span>
+    <div class="upload-title">Drop your report here, or click to upload</div>
+    <div class="upload-sub">
+      Supports PDF and TXT files<br>
+      PII auto-anonymized · No data retained
+    </div>
+    <div class="upload-hint">SEBI BRSR · Sustainability Reports · Compliance Filings</div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats" role="region" aria-label="Platform statistics">
+  <div class="stat"><div class="stat-n">3</div><div class="stat-l">Document classes</div></div>
+  <div class="stat"><div class="stat-n">16</div><div class="stat-l">ESG sub-metrics</div></div>
+  <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Validation accuracy</div></div>
+</div>
+
+<!-- ERROR -->
+<div class="error-banner" id="errorBanner" role="alert"></div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay" role="status" aria-live="polite">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Analysing document…</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     RESULTS
+     ════════════════════════════════════════════════════════ -->
+<section id="results" aria-label="Analysis results">
+
+  <!-- Header -->
+  <div class="results-hdr">
+    <div>
+      <div class="results-title">Analysis Results</div>
+      <div class="results-sub" id="resultsMeta"></div>
+    </div>
+    <div class="results-actions">
+      <button class="btn btn-green" id="btnPdf" onclick="downloadPdf()">
+        ⬇&nbsp; Download PDF Report
+      </button>
+      <button class="btn btn-outline" id="btnAnon" onclick="downloadAnonymized()">
+        ⬇&nbsp; Download Anonymised Text
+      </button>
+      <button class="btn btn-outline" onclick="resetPage()">
+        ↩&nbsp; Analyse another
+      </button>
+    </div>
+  </div>
+
+  <!-- Meta strip -->
+  <div class="meta-strip" id="metaStrip"></div>
+
+  <!-- KPI tiles -->
+  <span class="sec-label">ESG Scorecard</span>
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <!-- Row 1: Pillar bar + Confidence doughnut -->
+  <div class="charts-row charts-row-2" style="margin-bottom:1rem">
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <span class="chart-dot" style="background:#16A34A"></span>
+        <span class="chart-title">Pillar Scores</span>
+      </div>
+      <div class="chart-wrap chart-wrap-md">
+        <canvas id="pillarChart" aria-label="ESG pillar scores bar chart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <span class="chart-dot" style="background:#2563EB"></span>
+        <span class="chart-title">Classification Confidence</span>
+      </div>
+      <div class="chart-wrap chart-wrap-md">
+        <canvas id="confChart" aria-label="Classification confidence doughnut chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: E / S / G horizontal bar charts — 3 columns -->
+  <div class="charts-row charts-row-3" style="margin-bottom:1rem">
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <span class="chart-dot" style="background:#16A34A"></span>
+        <span class="chart-title">Environmental Metrics</span>
+      </div>
+      <div class="chart-wrap chart-wrap-lg">
+        <canvas id="envChart" aria-label="Environmental sub-metrics bar chart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <span class="chart-dot" style="background:#1D4ED8"></span>
+        <span class="chart-title">Social Metrics</span>
+      </div>
+      <div class="chart-wrap chart-wrap-lg">
+        <canvas id="socChart" aria-label="Social sub-metrics bar chart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-hdr">
+        <span class="chart-dot" style="background:#6D28D9"></span>
+        <span class="chart-title">Governance Metrics</span>
+      </div>
+      <div class="chart-wrap chart-wrap-lg">
+        <canvas id="govChart" aria-label="Governance sub-metrics bar chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- PII summary -->
+  <div class="pii-card">
+    <span class="sec-label">PII Anonymization Summary</span>
+    <div class="pii-count" id="piiCount"></div>
+    <div class="chips" id="piiChips"></div>
+    <div class="scrub-hdr">
+      <span class="scrub-lbl">Anonymised text preview</span>
+    </div>
+    <div class="scrub-box" id="scrubPreview" aria-label="Anonymised document preview"></div>
+  </div>
+
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ════════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let _data = null;
+let _file = null;
+const _charts = {};
+
+// ── Drag-and-drop ─────────────────────────────────────────────────────────────
+const zone = document.getElementById('uploadZone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
+zone.addEventListener('dragleave', e => { if (!zone.contains(e.relatedTarget)) zone.classList.remove('drag'); });
+zone.addEventListener('drop', e => {
+  e.preventDefault();
+  zone.classList.remove('drag');
+  const f = e.dataTransfer.files[0];
+  if (f) processFile(f);
+});
+
+function handleFile(inp) {
+  if (inp.files && inp.files[0]) processFile(inp.files[0]);
+}
+
+// ── Upload & analyse ──────────────────────────────────────────────────────────
+async function processFile(file) {
+  _file = file;
+  showLoading('Uploading and processing document…');
+  hideError();
+  hideResults();
+
+  const fd = new FormData();
+  fd.append('file', file);
+
+  try {
+    const r = await fetch('/analyse', { method: 'POST', body: fd });
+    if (!r.ok) {
+      let msg = `Server error ${r.status}`;
+      try { const e = await r.json(); msg = e.detail || msg; } catch(_) {}
+      throw new Error(msg);
+    }
+    _data = await r.json();
+    renderResults(_data);
+  } catch (e) {
+    showError('Analysis failed: ' + e.message);
+  } finally {
+    hideLoading();
+  }
+}
+
+// ── PDF download ──────────────────────────────────────────────────────────────
+async function downloadPdf() {
+  if (!_file) return;
+  const btn = document.getElementById('btnPdf');
+  const orig = btn.textContent;
+  btn.textContent = '⏳ Generating PDF…';
+  btn.disabled = true;
+
+  try {
+    const fd = new FormData();
+    fd.append('file', _file);
+    const r = await fetch('/pdf', { method: 'POST', body: fd });
+    if (!r.ok) throw new Error('PDF generation failed: ' + r.status);
+    const blob = await r.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'esg_report_' + (_file.name || 'report').replace(/\.[^.]+$/, '') + '.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  } catch (e) {
+    showError('PDF download error: ' + e.message);
+  } finally {
+    btn.textContent = orig;
+    btn.disabled = false;
+  }
+}
+
+// ── Anonymised text download ────────────────────────────────────────────────
+async function downloadAnonymized() {
+  if (!_file) return;
+  const btn = document.getElementById('btnAnon');
+  const orig = btn.textContent;
+  btn.textContent = '⏳ Preparing file…';
+  btn.disabled = true;
+
+  try {
+    const fd = new FormData();
+    fd.append('file', _file);
+    const r = await fetch('/anonymized', { method: 'POST', body: fd });
+    if (!r.ok) throw new Error('Download failed: ' + r.status);
+    const blob = await r.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'anonymized_' + (_file.name || 'document').replace(/\.[^.]+$/, '') + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  } catch (e) {
+    showError('Download error: ' + e.message);
+  } finally {
+    btn.textContent = orig;
+    btn.disabled = false;
+  }
+}
+
+// ── Colour helpers ────────────────────────────────────────────────────────────
+function scoreColor(v) {
+  if (v >= 75) return '#16A34A';
+  if (v >= 50) return '#D97706';
+  return '#DC2626';
+}
+function scoreColorAlpha(v, a) {
+  if (v >= 75) return `rgba(22,163,74,${a})`;
+  if (v >= 50) return `rgba(217,119,6,${a})`;
+  return `rgba(220,38,38,${a})`;
+}
+
+// ── Render results ─────────────────────────────────────────────────────────────
+function renderResults(d) {
+  // Guard: verify required fields exist
+  if (!d || !d.esg_scores || !d.classification) {
+    showError('Invalid response from server.');
+    return;
+  }
+
+  const sc  = d.esg_scores;
+  const cls = d.classification;
+
+  // Sub-heading
+  document.getElementById('resultsMeta').textContent =
+    `${d.source} · ${(d.char_count||0).toLocaleString()} chars · ` +
+    `${d.page_count ? d.page_count + ' pages' : 'N/A'} · ${d.duration_ms||0} ms`;
+
+  // Meta strip
+  const clsCSS = cls === 'SEBI_BRSR' ? 'cls-brsr' :
+                 cls === 'SUSTAINABILITY_REPORT' ? 'cls-sust' : 'cls-inv';
+  const clsLbl = cls.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+  document.getElementById('metaStrip').innerHTML = `
+    <div class="meta-item"><span class="cls-badge ${clsCSS}">${clsLbl}</span></div>
+    <div class="meta-item"><b>Confidence:</b> ${((d.confidence||0)*100).toFixed(1)}%</div>
+    <div class="meta-item"><b>Pages:</b> ${d.page_count || '—'}</div>
+    <div class="meta-item"><b>Characters:</b> ${(d.char_count||0).toLocaleString()}</div>
+    <div class="meta-item"><b>Processing:</b> ${d.duration_ms||0} ms</div>
+    <div class="meta-item"><b>PII redacted:</b> ${d.total_redactions||0}</div>
+  `;
+
+  // KPI tiles
+  const tiles = [
+    {
+      label: 'Overall Score', val: sc.overall,
+      pill: `<span class="kpi-pill" style="background:#DCFCE7;color:#14532D;border:1px solid #86EFAC">
+               Grade ${sc.grade}
+             </span>`
+    },
+    {
+      label: 'Environment', val: sc.environment,
+      pill: `<span class="kpi-pill" style="background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0">
+               Weight 40%
+             </span>`
+    },
+    {
+      label: 'Social', val: sc.social,
+      pill: `<span class="kpi-pill" style="background:#EFF6FF;color:#1E3A8A;border:1px solid #93C5FD">
+               Weight 35%
+             </span>`
+    },
+    {
+      label: 'Governance', val: sc.governance,
+      pill: `<span class="kpi-pill" style="background:#F5F3FF;color:#5B21B6;border:1px solid #C4B5FD">
+               Weight 25%
+             </span>`
+    },
+  ];
+  document.getElementById('kpiGrid').innerHTML = tiles.map(t => `
+    <div class="kpi" style="border-top:4px solid ${scoreColor(t.val)}">
+      <div class="kpi-label">${t.label}</div>
+      <div class="kpi-value" style="color:${scoreColor(t.val)}">${t.val}</div>
+      <div class="kpi-denom">/ 100</div>
+      ${t.pill}
+    </div>
+  `).join('');
+
+  // Charts
+  destroyCharts();
+
+  // Pillar vertical bar
+  buildPillarBar({
+    Environment: sc.environment,
+    Social:      sc.social,
+    Governance:  sc.governance,
+  });
+
+  // Confidence doughnut — safely read all_probs
+  const probs = d.all_probs || {};
+  buildConfDoughnut(probs);
+
+  // E/S/G horizontal bars
+  buildHbar('envChart', d.environment_metrics || {});
+  buildHbar('socChart', d.social_metrics      || {});
+  buildHbar('govChart', d.governance_metrics  || {});
+
+  // PII chips
+  const pii = d.pii_redactions || {};
+  const total = d.total_redactions || 0;
+  const catCount = Object.keys(pii).length;
+  document.getElementById('piiCount').textContent =
+    `${total} sensitive entities removed across ${catCount} categor${catCount===1?'y':'ies'}`;
+
+  const chipStyle = tag => {
+    if (tag.includes('PERSON'))    return 'background:#F5F3FF;color:#5B21B6;border-color:#C4B5FD';
+    if (tag.includes('ORG'))       return 'background:#EFF6FF;color:#1E40AF;border-color:#93C5FD';
+    if (tag.includes('FINANCIALS'))return 'background:#FFF7ED;color:#C2410C;border-color:#FED7AA';
+    if (tag.includes('EMAIL'))     return 'background:#F0FDFA;color:#0F766E;border-color:#99F6E4';
+    if (tag.includes('PHONE'))     return 'background:#FDF2F8;color:#86198F;border-color:#F0ABFC';
+    if (tag.includes('ADDRESS'))   return 'background:#F0FDF4;color:#166534;border-color:#86EFAC';
+    if (tag.includes('CIN'))       return 'background:#FEF3C7;color:#78350F;border-color:#FCD34D';
+    if (tag.includes('PAN'))       return 'background:#FEF3C7;color:#78350F;border-color:#FCD34D';
+    if (tag.includes('ACCOUNT'))   return 'background:#ECFDF5;color:#065F46;border-color:#6EE7B7';
+    return 'background:#F9FAFB;color:#374151;border-color:#D1D5DB';
+  };
+  document.getElementById('piiChips').innerHTML =
+    Object.entries(pii)
+      .sort((a, b) => b[1] - a[1])
+      .map(([tag, n]) => {
+        const lbl = tag.replace('[REDACTED_','').replace(']','').replace(/_/g,' ');
+        return `<span class="chip" style="${chipStyle(tag)}">${lbl} <b>${n}</b></span>`;
+      }).join('');
+
+  // Scrubbed preview
+  const preview = d.scrubbed_preview || '';
+  document.getElementById('scrubPreview').textContent =
+    preview || '(No text preview available)';
+
+  showResults();
+  setTimeout(() => {
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+// ── Chart builders ────────────────────────────────────────────────────────────
+function destroyCharts() {
+  Object.values(_charts).forEach(c => { try { c.destroy(); } catch(_) {} });
+  Object.keys(_charts).forEach(k => delete _charts[k]);
+}
+
+const CHART_DEFAULTS = {
+  animation: { duration: 700, easing: 'easeOutQuart' },
+  plugins: { legend: { display: false } },
+  layout: { padding: 0 },
+};
+
+function buildPillarBar(metricsObj) {
+  const labels = Object.keys(metricsObj);
+  const vals   = Object.values(metricsObj);
+  const cols   = vals.map(scoreColor);
+  const ctx    = document.getElementById('pillarChart').getContext('2d');
+
+  _charts.pillar = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: vals,
+        backgroundColor: vals.map(v => scoreColorAlpha(v, 0.85)),
+        borderColor: cols,
+        borderWidth: 1.5,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: c => ` ${c.parsed.y} / 100`,
+          }
+        },
+        annotation: {},
+      },
+      scales: {
+        y: {
+          min: 0, max: 110,
+          grid: { color: '#F3F4F6', drawTicks: false },
+          ticks: { color: '#9CA3AF', font: { size: 10 }, stepSize: 25 },
+          border: { display: false },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#111827', font: { size: 11, weight: '600' } },
+          border: { display: false },
+        },
+      },
+    }
+  });
+}
+
+function buildConfDoughnut(probs) {
+  // probs keys: SEBI_BRSR, SUSTAINABILITY_REPORT, INVALID_DOCUMENT
+  const labelMap = {
+    'SEBI_BRSR':            'SEBI BRSR',
+    'SUSTAINABILITY_REPORT':'Sustainability',
+    'INVALID_DOCUMENT':     'Invalid',
+  };
+  const colorMap = {
+    'SEBI_BRSR':            '#16A34A',
+    'SUSTAINABILITY_REPORT':'#2563EB',
+    'INVALID_DOCUMENT':     '#DC2626',
+  };
+  const keys   = Object.keys(probs);
+  const labels = keys.map(k => labelMap[k] || k);
+  const vals   = keys.map(k => parseFloat((probs[k] * 100).toFixed(1)));
+  const cols   = keys.map(k => colorMap[k] || '#9CA3AF');
+  const ctx    = document.getElementById('confChart').getContext('2d');
+
+  _charts.conf = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: vals,
+        backgroundColor: cols,
+        borderWidth: 3,
+        borderColor: '#fff',
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            color: '#374151',
+            font: { size: 10, family: 'Inter' },
+            padding: 12,
+            boxWidth: 12,
+            boxHeight: 12,
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: c => ` ${c.label}: ${c.parsed.toFixed(1)}%`,
+          }
+        },
+      },
+    }
+  });
+}
+
+function buildHbar(canvasId, metricsObj) {
+  if (!metricsObj || Object.keys(metricsObj).length === 0) return;
+
+  const sorted = Object.entries(metricsObj).sort((a, b) => a[1] - b[1]);
+  const labels = sorted.map(e => e[0]);
+  const vals   = sorted.map(e => e[1]);
+  const cols   = vals.map(v => scoreColorAlpha(v, 0.85));
+  const bords  = vals.map(scoreColor);
+  const ctx    = document.getElementById(canvasId).getContext('2d');
+
+  _charts[canvasId] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: vals,
+        backgroundColor: cols,
+        borderColor: bords,
+        borderWidth: 1.5,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: c => ` ${c.parsed.x} / 100`,
+          }
+        },
+      },
+      scales: {
+        x: {
+          min: 0, max: 110,
+          grid: { color: '#F3F4F6', drawTicks: false },
+          ticks: { color: '#9CA3AF', font: { size: 9 } },
+          border: { display: false },
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: '#111827', font: { size: 9.5 } },
+          border: { display: false },
+        },
+      },
+    }
+  });
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function showLoading(msg) {
+  document.getElementById('loadingText').textContent = msg || 'Processing…';
+  document.getElementById('loadingOverlay').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.remove('show');
+}
+function showError(msg) {
+  const b = document.getElementById('errorBanner');
+  b.textContent = msg;
+  b.classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function hideError() {
+  document.getElementById('errorBanner').classList.remove('show');
+}
+function showResults() {
+  document.getElementById('results').classList.add('show');
+}
+function hideResults() {
+  document.getElementById('results').classList.remove('show');
+}
+function resetPage() {
+  hideResults();
+  hideError();
+  destroyCharts();
+  document.getElementById('fileInput').value = '';
+  _file = null; _data = null;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

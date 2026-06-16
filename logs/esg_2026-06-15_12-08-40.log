@@ -1,0 +1,43 @@
+2026-06-15 12:08:40 [INFO    ] src.logger | Logger ready → C:\Users\shups\Desktop\esg_pii_fixed\esg_app\logs\esg_2026-06-15_12-08-40.log
+2026-06-15 12:08:41 [INFO    ] src.pipeline.predict_pipeline | Pipeline started
+2026-06-15 12:08:41 [INFO    ] src.components.data_ingestion | Ingestion started
+2026-06-15 12:08:51 [INFO    ] src.components.data_ingestion | Ingested 116958 chars, 38 pages
+2026-06-15 12:08:51 [INFO    ] src.components.data_transformation | Anonymization started (len=116958)
+2026-06-15 12:08:51 [INFO    ] src.components.data_transformation | Anonymization done — 252 total redactions across 10 categories → C:\Users\shups\Desktop\esg_pii_fixed\esg_app\data\processed\tmpo5sndfdt_scrubbed.txt
+2026-06-15 12:08:58 [WARNING ] tensorflow | From C:\Users\shups\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2026-06-15 12:09:00 [INFO    ] src.components.model_inference | Loading model → C:\Users\shups\Desktop\esg_pii_fixed\esg_app\models\esg_classifier.keras
+2026-06-15 12:09:00 [WARNING ] tensorflow | From C:\Users\shups\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\backend.py:1398: The name tf.executing_eagerly_outside_functions is deprecated. Please use tf.compat.v1.executing_eagerly_outside_functions instead.
+
+2026-06-15 12:09:01 [INFO    ] src.components.model_inference | Artifacts loaded (vocab=1599)
+2026-06-15 12:09:02 [INFO    ] src.pipeline.predict_pipeline | Pipeline done — class=SEBI_BRSR  score=97.8  21848ms
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_begin with no data
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_header_field with data[42:61]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_header_value with data[63:111]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_header_end with no data
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_header_field with data[113:125]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_header_value with data[127:142]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_header_end with no data
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_headers_finished with no data
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[146:12674]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[0:1]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[12675:52526]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[0:1]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[52527:122430]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[0:1]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[122431:160075]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[0:1]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[160076:163840]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[0:98452]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[0:1]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[98453:132931]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[0:1]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_data with data[132932:181992]
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_part_end with no data
+2026-06-15 12:09:09 [DEBUG   ] multipart.multipart | Calling on_end with no data
+2026-06-15 12:09:09 [INFO    ] src.pipeline.predict_pipeline | Pipeline started
+2026-06-15 12:09:09 [INFO    ] src.components.data_ingestion | Ingestion started
+2026-06-15 12:09:19 [INFO    ] src.components.data_ingestion | Ingested 116958 chars, 38 pages
+2026-06-15 12:09:19 [INFO    ] src.components.data_transformation | Anonymization started (len=116958)
+2026-06-15 12:09:19 [INFO    ] src.components.data_transformation | Anonymization done — 252 total redactions across 10 categories → C:\Users\shups\Desktop\esg_pii_fixed\esg_app\data\processed\tmpz6e6thkp_scrubbed.txt
+2026-06-15 12:09:20 [INFO    ] src.pipeline.predict_pipeline | Pipeline done — class=SEBI_BRSR  score=97.8  11089ms

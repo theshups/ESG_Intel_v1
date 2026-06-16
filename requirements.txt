@@ -1,0 +1,11 @@
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.9
+aiofiles>=23.2.0
+tensorflow-cpu==2.15.0
+pdfplumber>=0.10.0
+polars>=1.0.0
+numpy==1.26.4
+reportlab>=4.0.0
+matplotlib>=3.7.0
+rich>=13.0.0

@@ -1,0 +1,13 @@
+2026-06-16 09:18:40 [INFO    ] src.logger | Logger ready → C:\Users\shups\Desktop\esg_pii_fixed\esg_app\logs\esg_2026-06-16_09-18-40.log
+2026-06-16 09:18:51 [WARNING ] tensorflow | From C:\Users\shups\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2026-06-16 09:18:54 [INFO    ] __main__ | === Training Start ===
+2026-06-16 09:18:54 [INFO    ] __main__ | Dataset: 900 rows → C:\Users\shups\Desktop\esg_pii_fixed\esg_app\data\raw\training_dataset.csv
+2026-06-16 09:18:54 [WARNING ] tensorflow | From C:\Users\shups\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\backend.py:1398: The name tf.executing_eagerly_outside_functions is deprecated. Please use tf.compat.v1.executing_eagerly_outside_functions instead.
+
+2026-06-16 09:18:55 [WARNING ] tensorflow | From C:\Users\shups\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\utils\tf_utils.py:492: The name tf.ragged.RaggedTensorValue is deprecated. Please use tf.compat.v1.ragged.RaggedTensorValue instead.
+
+2026-06-16 09:18:56 [WARNING ] tensorflow | From C:\Users\shups\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\engine\base_layer_utils.py:384: The name tf.executing_eagerly_outside_functions is deprecated. Please use tf.compat.v1.executing_eagerly_outside_functions instead.
+
+2026-06-16 09:19:13 [INFO    ] __main__ | Training complete — val_accuracy=1.0000  epochs=8
+2026-06-16 09:19:13 [INFO    ] __main__ | Model saved → C:\Users\shups\Desktop\esg_pii_fixed\esg_app\models\esg_classifier.keras
