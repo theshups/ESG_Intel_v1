@@ -240,8 +240,16 @@ def _analysis(r: "PipelineResult") -> dict:
         f"The overall ESG performance score is <b>{sc.overall_score}/100</b> "
         f"(Grade <b>{sc.grade}</b>), reflecting {_perf(sc.overall_score)} ESG disclosure maturity. "
         f"Scores reflect disclosure depth across 16 sub-metrics: "
-        f"5 Environmental (weight 40%), 6 Social (weight 35%), and 5 Governance (weight 25%)."
+        f"5 Environmental (weight 40%), 6 Social (weight 35%), and 5 Governance (weight 25%). "
+        f"Keyword matches preceded by negation language (e.g. \"no policy\", \"lack of\") are "
+        f"excluded from positive scoring."
     )
+    if getattr(sc, "low_confidence", False):
+        summary += (
+            " <b>Note:</b> this document is short or contains relatively few ESG keyword "
+            "matches — the scores above should be treated as indicative rather than "
+            "conclusive, and manual review is recommended."
+        )
 
     top_e  = max(sc.e_metrics, key=sc.e_metrics.get)
     weak_e = min(sc.e_metrics, key=sc.e_metrics.get)
