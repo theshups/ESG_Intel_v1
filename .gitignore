@@ -36,3 +36,5 @@ confusion_matrix.png
 
 # Environment variables
 .env
+__pycache__/
+*.pyc
