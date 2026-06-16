@@ -17,18 +17,6 @@ PDF report, JSON export, and anonymised text file.
 
 ---
 
-## Quick start
-
-```bash
-pip install -r requirements.txt
-python -m src.components.model_trainer   # train once (~60s)
-uvicorn main:app --reload --port 7860
-```
-
-Open http://localhost:7860
-
----
-
 ## Pipeline overview
 
 ```
