@@ -1,13 +1,3 @@
----
-title: ESG Document Intelligence
-emoji: 📋
-colorFrom: green
-colorTo: green
-sdk: docker
-pinned: false
-license: mit
----
-
 # ESG Document Classification & Anonymization Microservice
 
 Upload a BRSR (Business Responsibility and Sustainability Report) or
