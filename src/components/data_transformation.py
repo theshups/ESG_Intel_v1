@@ -1,41 +1,6 @@
 """
 src/components/data_transformation.py
-=======================================
-Comprehensive two-pass anonymization engine.
 
-Pass A — Linguistic NER (rule-based, no model dependency)
-----------------------------------------------------------
-1. PERSON (honorific-anchored)   — Mr./Dr./Shri./CEO + Name
-2. PERSON (designation-anchored) — Name – Job Title / Name, Job Title
-3. ORG (corporate-suffix)        — Name + Ltd./LLP/Limited/etc.
-4. ORG (institutional keywords)  — Stock Exchange, Board, Authority names
-
-Pass B — Deterministic Regex (16 patterns, flag-isolated)
------------------------------------------------------------
- 1. CIN              — Corporate Identity Number
- 2. PAN              — Permanent Account Number
- 3. IBAN              — International bank account
- 4. Bank account      — 9-18 digit standalone numbers
- 5. Financial figures — ₹ / Rs / `/ INR / USD / crores / lakhs (incl. OCR backtick)
- 6. Percentages       — NOT redacted (kept — not PII, needed for ESG scoring)
- 7. Email             — standard email pattern
- 8. Website / URL      — www.*, http(s)://*
- 9. Phone              — Indian + international formats
-10. Address (Survey/Plot/Door/Flat No.)
-11. Address (City, State, PIN — Indian city/state gazetteer)
-12. PIN code           — standalone 6-digit Indian postal code
-13. GSTIN              — GST Identification Number
-14. Aadhaar             — 12-digit Aadhaar number (XXXX XXXX XXXX)
-15. Date of birth / joining — DD/MM/YYYY near "DOB"/"born"/"joined"
-16. IFSC code           — bank branch code
-
-Safety
-------
-- Empty-string guard
-- subn() for atomic count+replace
-- Word-boundary anchored everywhere to avoid mid-word corruption
-  (fixes "Type of assu[REDACTED_ORG]re" style false positives)
-"""
 from __future__ import annotations
 import os, re
 from dataclasses import dataclass, field
