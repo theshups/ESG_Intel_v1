@@ -1,27 +1,6 @@
 """
 src/components/model_evaluation.py
-====================================
-Generates the two diagnostic charts for the trained classifier:
-  - accuracy_loss.png    : training/validation accuracy & loss curves
-  - confusion_matrix.png : confusion matrix on the full synthetic dataset
 
-Important honesty note
------------------------
-The saved `.keras` model does not retain its original `History` object
-(Keras does not serialise training history into the model file). To
-produce real accuracy/loss curves, this module performs a short
-**warm-start re-fit** (10 epochs) on top of the already-trained weights,
-using the same synthetic dataset and the same random seed as the
-original training run. This is NOT free — it takes roughly 10-20 seconds
-on CPU and will nudge the model's weights slightly (though in practice,
-since the model already sits at ~100% accuracy, the curves it produces
-are representative of the original convergence behaviour).
-
-There is no way to produce the *exact original* curves without having
-saved `hist.history` at training time — this module is the closest
-available correct alternative, and callers should be told it involves
-a brief re-fit, not instant chart generation from cached data.
-"""
 from __future__ import annotations
 import io
 import numpy as np
