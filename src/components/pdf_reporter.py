@@ -1,19 +1,6 @@
 """
 src/components/pdf_reporter.py
-================================
-Generates a clean, perfectly-aligned A4 PDF ESG report.
 
-Design rules
-------------
-- Title: "ESG Report Analysis" — no colour, plain black Helvetica-Bold
-- Fixed A4 content width = 170mm (A4 210mm - 20mm margins each side)
-- ALL columns set as explicit fractions of CONTENT_W — nothing overflows
-- No negative margins anywhere
-- align-items: flex-start equivalent — all text left-aligned except explicit centres
-- Charts embedded as PNG bytes at exact CONTENT_W width
-- Every table uses colWidths that sum to exactly CONTENT_W
-- Spacer heights are fixed constants, never calculated mid-flow
-"""
 from __future__ import annotations
 
 import io
